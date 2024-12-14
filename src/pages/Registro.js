@@ -6,7 +6,7 @@ import { iniciarSesion } from "../apis";
 import MainLayout from '../layouts/MainLayout';
 import AuthContext from "../contexts/AuthContext";
 
-const Login = () => {
+const Registro = () => {
     const [usuario, setUsuario] = useState("");
     const [contraseña, setContraseña] = useState("");
 
@@ -20,7 +20,7 @@ const Login = () => {
     });
 
     const onClick = () => {
-        auth.iniciarSesion(usuario, contraseña, () => history.replace("/lugares"));
+        auth.registro(usuario, contraseña, () => history.replace("/lugares"));
     };
 
     return (
@@ -30,7 +30,7 @@ const Login = () => {
                     <Card>
                         <Card.Body>
                             <h3 className="text-center">
-                                <b>LOGIN</b>
+                                <b>REGISTRARSE</b>
                             </h3>
                             <FormGroup>
                                 <FormLabel>Usuario</FormLabel>
@@ -63,7 +63,7 @@ const Login = () => {
                                             aria-hidden="true"
                                         />
                                     ) : (
-                                        "Iniciar Sesión"
+                                        "Registrarse"
                                     )
                                 }
                             </Button>
@@ -76,4 +76,4 @@ const Login = () => {
 }
 
 
-export default Login;
+export default Registro;
