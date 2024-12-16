@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { añadirCategoria, añadirItemsMenu, actualizarItemMenu } from '../apis';
 import AuthContext from '../contexts/AuthContext';
 import ImagenDropzone from './ImagenDropzone';
+import ARViewer from '../components/AR';
 
 const FormularioItemMenu = ({ lugar, onDone, item = {} }) => {
     const [nombreCategoria, setNombreCategoria] = useState("");
@@ -16,6 +17,7 @@ const FormularioItemMenu = ({ lugar, onDone, item = {} }) => {
     const [precio, setPrecio] = useState(item.precio || 0);
     const [descripcion, setDescripcion] = useState(item.descripcion);
     const [imagen, setImagen] = useState(item.imagen);
+    const [modeloar, setModeloar] = useState(item.modeloar);
     const [esta_disponible, setEsta_disponible] = useState(
         item.esta_disponible === undefined ? true : !!item.esta_disponible
     );
@@ -45,6 +47,7 @@ const FormularioItemMenu = ({ lugar, onDone, item = {} }) => {
             precio,
             descripcion,
             imagen,
+            modeloar,
             esta_disponible: esta_disponible
         }, auth.token);
 
@@ -57,6 +60,7 @@ const FormularioItemMenu = ({ lugar, onDone, item = {} }) => {
             setPrecio(0);
             setDescripcion("");
             setImagen("");
+            setModeloar("");
             setEsta_disponible(true);
             onDone();
         }
@@ -72,6 +76,7 @@ const FormularioItemMenu = ({ lugar, onDone, item = {} }) => {
                 precio,
                 descripcion,
                 imagen,
+                modeloar,
                 esta_disponible: esta_disponible
             },
             auth.token
@@ -86,11 +91,12 @@ const FormularioItemMenu = ({ lugar, onDone, item = {} }) => {
             setPrecio(0)
             setDescripcion("");
             setImagen("");
+            setModeloar("");
             setEsta_disponible(false);
             onDone();
         }
     }
-
+    
     return (
         <div>
             {/* FORMULARIO CATEGORIAS */}
@@ -170,9 +176,32 @@ const FormularioItemMenu = ({ lugar, onDone, item = {} }) => {
                 />
             </Form.Group>
             <Form.Group>
-                <Form.Label>Imagen</Form.Label>
-                <ImagenDropzone value={imagen} onChange={setImagen} />
+                <Form.Label>Imagen del Producto</Form.Label>
+                <ImagenDropzone
+                    value={imagen}
+                    onChange={setImagen}
+                    label="Arrastra la imagen del producto aquí, o clickea."
+                    accept="image/*"
+                />
             </Form.Group>
+            <Form.Group>
+                <Form.Label>Modelo AR</Form.Label>
+                <ImagenDropzone
+                    value={modeloar}
+                    onChange={setModeloar}
+                    label="Arrastra el archivo del modelo AR aquí (ej. GLB/GLTF)"
+                    accept=".glb,.gltf,model/*"
+                />
+            </Form.Group>
+
+            {/* Ver Modelo AR */}
+            {modeloar && (
+                <div>
+                    <h5>Vista Previa del Modelo AR</h5>
+                    <ARViewer modelUrl={modeloar} />
+                </div>
+            )}
+
             <Form.Group>
                 <Form.Check 
                     type="checkbox"

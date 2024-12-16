@@ -1,8 +1,9 @@
 import { Col, Button } from 'react-bootstrap';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { BiEdit } from 'react-icons/bi'
 import { AiOutlineDelete } from 'react-icons/ai'
+import ARViewer from './AR';
 
 const Container = styled.div`
   border-radius: 5px;
@@ -23,50 +24,76 @@ const Container = styled.div`
   }
 `;
 
-const ItemMenu = ({ item, onEdit, onRemove, onOrder }) => (
-    <Container active={item.esta_disponible}>
-        <Col xs={5} style={{backgroundImage: `url(${item.imagen})`}}/>
-        <Col xs={7} className="d-flex flex-column justify-content-between w-100">
-            <div>
-                <div className="d-flex justify-content-between align-items-center mb-2">
-                    <h4 className="mb-0">
-                        <b>{item.nombre}</b>
-                    </h4>
-                    <div>
-                        { onEdit ? (
-                            <Button variant="link" onClick={onEdit}>
-                                <BiEdit size={20} />
-                            </Button>
-                        ) : null }
+const ItemMenu = ({ item, onEdit, onRemove, onOrder }) => {
+    const [showAR, setShowAR] = useState(false); // Estado para mostrar el modelo
+    const [showImagen, setShowImagen] = useState(true);
 
-                        { onRemove ? (
-                            <Button variant="link" onClick={onRemove}>
-                                <AiOutlineDelete size={20} color="red" />
-                            </Button>
-                        ) : null }
-                    </div>
-                </div>
-                <p className="mb-4">{item.descripcion}</p>
-            </div>
-            <div className="d-flex justify-content-between align-items-end">
+    const toggleARView = () => {
+        setShowAR(!showAR);
+        setShowImagen(!showImagen);
+    };
+    
+    return (
+        <Container active={item.esta_disponible}>
+            {/* Mostrar imagen o no según el estado showImage */}
+            {showImagen && (
+                <Col xs={5} style={{ backgroundImage: `url(${item.imagen})`, backgroundSize: 'cover', height: '200px' }} />
+            )}
+
+            <Col xs={7} className="d-flex flex-column justify-content-between w-100">
                 <div>
-                    <h5 className="mb-0 text-standard">
-                        <b>${item.precio}</b>
-                    </h5>
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                        <h4 className="mb-0">
+                            <b>{item.nombre}</b>
+                        </h4>
+                        <div>
+                            { onEdit ? (
+                                <Button variant="link" onClick={onEdit}>
+                                    <BiEdit size={20} />
+                                </Button>
+                            ) : null }
 
-                    {onOrder ? (
-                        <Button variant="standard" className="mt-2" size="sm" onClick={() => onOrder(item)}>
-                            {!item.quantity ? "Añadir a pedido" : `Añadir más (${item.quantity})`}
-                        </Button>
-                    ) : null}
+                            { onRemove ? (
+                                <Button variant="link" onClick={onRemove}>
+                                    <AiOutlineDelete size={20} color="red" />
+                                </Button>
+                            ) : null }
+                        </div>
+                    </div>
+                    <p className="mb-4">{item.descripcion}</p>
                 </div>
+                <div className="d-flex justify-content-between align-items-end">
+                    <div>
+                        <h5 className="mb-0 text-standard">
+                            <b>${item.precio}</b>
+                        </h5>
 
-                {!item.esta_disponible ? (<small className="text-secondary">No Disponible</small>) : null}
+                        {onOrder ? (
+                            <Button variant="standard" className="mt-2" size="sm" onClick={() => onOrder(item)}>
+                                {!item.quantity ? "Añadir a pedido" : `Añadir más (${item.quantity})`}
+                            </Button>
+                        ) : null}
+                    </div>
 
-            </div>
-        </Col>
-    </Container>
-);
+                    {!item.esta_disponible ? (<small className="text-secondary">No Disponible</small>) : null}
+
+                </div>
+                {/* Botón para ver el modelo en AR */}
+                {item.modeloar && (
+                    <Button variant="secondary" onClick={toggleARView} className="mt-3">
+                        {showAR ? 'Cerrar Modelo AR' : 'Ver Modelo AR'}
+                    </Button>
+                )}
+
+                {/* Mostrar el modelo AR cuando showAR es true */}
+                {showAR && item.modeloar && (
+                    <div style={{ marginTop: '20px' }}>
+                        <ARViewer modelUrl={item.modeloar} />
+                    </div>
+                )}
+            </Col>
+        </Container>
+)};
 
 
 export default ItemMenu;

@@ -18,38 +18,41 @@ img {
 }
 `;
 
-function ImagenDropzone({ value, onChange }) {
+function ImagenDropzone({ value, onChange, label = "Sube una imagen", accept = "image/*" }) {
     const [loading, setLoading] = useState(false);
-
+  
     const onDrop = useCallback((acceptedFiles) => {
-        console.log(acceptedFiles);
-
-        setLoading(true);
-        subirImagen(acceptedFiles[0])
-            .then((json) => onChange(json.url))
-            .finally(() => setLoading(false));
-    }, [])
-
-    const {getRootProps, getInputProps} = useDropzone({
-        onDrop,
-        multiple: false,
-        accept: 'image/*',
-    })
-
+      console.log(acceptedFiles);
+  
+      setLoading(true);
+      subirImagen(acceptedFiles[0])
+        .then((json) => onChange(json.url))
+        .finally(() => setLoading(false));
+    }, [onChange]);
+  
+    const { getRootProps, getInputProps } = useDropzone({
+      onDrop,
+      multiple: false,
+      accept,
+    });
+  
     return (
-        <Dropzone {...getRootProps()}>
-            <input {...getInputProps()} />
-            {
-                value ? (
-                    <img src={value}/>
-                ) : loading ? (
-                    <Spinner variant="standard" animation="border" role="staus"/>
-                ) : (
-                    <span>Arrastra la imagen aqui, o clickea.</span>
-                )
-            }
-        </Dropzone>
-    )
-}
+      <Dropzone {...getRootProps()}>
+        <input {...getInputProps()} />
+        {value ? (
+          accept.includes('image') ? (
+            <img src={value} alt="Preview" />
+          ) : (
+            <span>Modelo subido: {value.split('/').pop()}</span> // Mostrar el nombre del modelo
+          )
+        ) : loading ? (
+          <Spinner variant="standard" animation="border" role="status" />
+        ) : (
+          <span>{label}</span>
+        )}
+      </Dropzone>
+    );
+  }
+  
 
 export default ImagenDropzone;
