@@ -1,10 +1,8 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Html } from '@react-three/drei';
-import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
-// Component to display GLTF or GLB model
 function ARViewer({ modelUrl }) {
     const [model, setModel] = useState(null);
   
@@ -19,7 +17,7 @@ function ARViewer({ modelUrl }) {
         },
         undefined,
         (error) => {
-          console.error('Error loading model:', error);
+          console.error('Error cargando modelo:', error);
         }
       );
     }, [modelUrl]);
@@ -27,13 +25,13 @@ function ARViewer({ modelUrl }) {
     return (
       <div style={{ width: '100%', height: '500px' }}>
         <Canvas>
-          <ambientLight intensity={0.5} />
+          <ambientLight intensity={2.0} />
           <pointLight position={[10, 10, 10]} intensity={1} />
           {model ? (
-            <primitive object={model} />
+            <primitive object={model} scale={[6, 6, 6]} position={[0, -1, 0]} />
           ) : (
             <Html center>
-              <span>Loading Model...</span>
+              <span>Cargando Modelo...</span>
             </Html>
           )}
           <OrbitControls />
