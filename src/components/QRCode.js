@@ -42,7 +42,8 @@ const QRCode = ({mesa, lugarId}) => {
         content: () => componentRef.current,
     });
 
-    const url = `${window.location.origin}/menu/${lugarId}/${mesa}`; // Se vera así: localhost:3000/menu/1/3
+    const ipAddress = '172.20.10.5:3000'; // Sustituye con la IP que deseas usar
+    const url = `http://${ipAddress}/menu/${lugarId}/${mesa}`; // Se vera como: 192.168.1.100/menu/1/3    
 
     return (
         <Container>
